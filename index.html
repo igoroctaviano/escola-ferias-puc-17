@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Chat Exercise</title>
+  <link rel="stylesheet"type="text/css" href="style.css">
+  <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <div id="header">
+      <h1>Chat Example</h1>
+      <h3>As simple as possible</h3>
+    </div>
+
+    <div id="form-send-message">
+      <input id="input-name" placeholder="Insira seu nome" />
+      <input id="input-message" placeholder="Insira sua mensagem" />
+      <button id="send-message-button"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+    </div>
+
+    <div id="chat-container">
+  
+    </div>
+  </div>
+  <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
+  <script>
+    document.addEventListener( 'DOMContentLoaded', function () {
+        var jaCarregou = false;
+      // Inicializar o banco
+        firebase.initializeApp({
+          apiKey: "AIzaSyDm9VELymxmtderQWNBmMfXwY_stgRoPsg",
+          authDomain: "escola-de-ferias.firebaseapp.com",
+          databaseURL: "https://escola-de-ferias.firebaseio.com/",
+          storageBucket: "gs://escola-de-ferias.appspot.com/"
+        });
+
+
+        function escutarMensagens(callback) {
+          var caminhoMensagens = "/mensagem";
+          var tabelaMensagens = firebase.database().ref(caminhoMensagens);
+          tabelaMensagens.on('value', function (snapshot) {
+            var mensagens;
+            // Tem nova mensagem no banco?
+            if (snapshot.val()) {
+              mensagens = snapshot.val();
+            }
+            callback(mensagens);
+          });
+        }
+
+        escutarMensagens(function(mensagens) {
+          var usuario = document.getElementById("input-name").value;
+          var mensagens = Object.keys(mensagens).map(function(key) {
+            return mensagens[key];
+          });
+
+          if(jaCarregou) {
+            addElement(mensagens[mensagens.length - 1], usuario);
+          } else {
+            mensagens.forEach(function(mensagem) {
+              addElement(mensagem, usuario);
+            });
+
+            jaCarregou = true;
+          }
+
+        })
+        function enviarMensagem(usuario, mensagem, callback) {
+          var caminhoMensagens = "/mensagem";
+          var tabelaMensagens = firebase.database().ref(caminhoMensagens);
+          tabelaMensagens.push({ usuario: usuario, mensagem: mensagem }).then(callback);
+        }
+
+        document.getElementById("send-message-button").addEventListener("click", function() {
+            enviarMensagem("Igor Octaviano", "Hello World!", function() {
+              console.log("Mensagem enviada!");
+            });
+        });
+        function addElement(mensagem, usuario) {
+          var chatContainer = document.getElementById("chat-container");
+          var messageItem = document.createElement("div");
+          messageItem.className += "message-item row";
+
+          var messageContent = document.createElement("div");
+          if (mensagem.usuario.trim() === usuario.trim()) {
+            messageContent.className += "message-content float-right";
+          } else {
+            messageContent.className += "message-content float-left";
+          }
+
+          var messageTitle = document.createElement("h4");
+          messageTitle.className += "author";
+          messageTitle.innerHTML = mensagem.usuario;
+
+          var messageText = document.createElement("p");
+          messageText.innerHTML = mensagem.mensagem;
+
+          messageContent.appendChild(messageTitle);
+          messageContent.appendChild(messageText);
+          messageItem.appendChild(messageContent);
+
+          chatContainer.insertBefore(messageItem, chatContainer.firstChild);
+        }
+    }, 800 );
+  </script>
+  <script src="https://use.fontawesome.com/6d891047d5.js"></script>
+</body>
+</html>
