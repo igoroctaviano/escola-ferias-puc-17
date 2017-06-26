@@ -9,7 +9,6 @@
 
   <!-- Estilo CSS -->
   <link rel="stylesheet" type="text/css" href="style.css">
-
   <!-- Fonte -->
   <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
 </head>
@@ -26,8 +25,8 @@
 
   <!-- Formulário de envio das mensagens -->
   <div id="form-send-message">
-    <input id="input-name" placeholder="Insira seu nome"/>
-    <input id="input-message" placeholder="Insira sua mensagem"/>
+    <input id="input-name" placeholder="Insira seu nome" required/>
+    <input id="input-message" placeholder="Insira sua mensagem" required/>
     <button id="send-message-button"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
   </div>
 
@@ -110,11 +109,14 @@
 
     // Adicionar evento para enviar mensagem ao firebase
     botaoDeEnviar.addEventListener("click", function () {
-      usuarioAtual = document.getElementById("input-name").value;
-      var mensagem = document.getElementById("input-message").value;
+      usuarioAtual = document.getElementById("input-name").value.trim();
+      var mensagem = document.getElementById("input-message").value.trim();
+      var deveEnviar = usuarioAtual.length > 0 && mensagem.length > 0;
 
-      // Enviar mensagem passando callback
-      enviarMensagem(usuarioAtual, mensagem);
+      // Enviar mensagem
+      if (deveEnviar) {
+        enviarMensagem(usuarioAtual, mensagem);
+      }
     });
 
     function addMensagem(mensagem, usuario) {
