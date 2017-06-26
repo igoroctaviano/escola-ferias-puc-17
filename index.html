@@ -19,13 +19,14 @@
     </div>
 
     <div id="chat-container">
-  
+
     </div>
   </div>
   <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
   <script>
     document.addEventListener( 'DOMContentLoaded', function () {
         var jaCarregou = false;
+        var usuario = "";
       // Inicializar o banco
         firebase.initializeApp({
           apiKey: "AIzaSyDm9VELymxmtderQWNBmMfXwY_stgRoPsg",
@@ -49,7 +50,8 @@
         }
 
         escutarMensagens(function(mensagens) {
-          var usuario = document.getElementById("input-name").value;
+          usuario = document.getElementById("input-name").value;
+        
           var mensagens = Object.keys(mensagens).map(function(key) {
             return mensagens[key];
           });
@@ -72,7 +74,10 @@
         }
 
         document.getElementById("send-message-button").addEventListener("click", function() {
-            enviarMensagem("Igor Octaviano", "Hello World!", function() {
+          usuario = document.getElementById("input-name").value;
+          var mensagem = document.getElementById("input-message").value;
+
+          enviarMensagem(usuario, mensagem, function() {
               console.log("Mensagem enviada!");
             });
         });
