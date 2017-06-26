@@ -1,113 +1,158 @@
 <!DOCTYPE html>
 <html>
 <head>
+  <!-- Título da tab do navegador -->
   <title>Chat Exercise</title>
-  <link rel="stylesheet"type="text/css" href="style.css">
+
+  <!-- Para reconhecer pontuações do português -->
+  <meta charset="UTF-8">
+
+  <!-- Estilo CSS -->
+  <link rel="stylesheet" type="text/css" href="style.css">
+
+  <!-- Fonte -->
   <link href="https://fonts.googleapis.com/css?family=Lato" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
-    <div id="header">
-      <h1>Chat Example</h1>
-      <h3>As simple as possible</h3>
-    </div>
 
-    <div id="form-send-message">
-      <input id="input-name" placeholder="Insira seu nome" />
-      <input id="input-message" placeholder="Insira sua mensagem" />
-      <button id="send-message-button"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
-    </div>
+<!-- Container para alinhar conteudo no meio da tela -->
+<div class="container">
 
-    <div id="chat-container">
-
-    </div>
+  <!-- Cabeçalho -->
+  <div id="header">
+    <h1>Chat Escola de Férias</h1>
+    <h3>Simplão né!</h3>
   </div>
-  <script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
-  <script>
-    document.addEventListener( 'DOMContentLoaded', function () {
-        var jaCarregou = false;
-        var usuario = "";
-      // Inicializar o banco
-        firebase.initializeApp({
-          apiKey: "AIzaSyDm9VELymxmtderQWNBmMfXwY_stgRoPsg",
-          authDomain: "escola-de-ferias.firebaseapp.com",
-          databaseURL: "https://escola-de-ferias.firebaseio.com/",
-          storageBucket: "gs://escola-de-ferias.appspot.com/"
+
+  <!-- Formulário de envio das mensagens -->
+  <div id="form-send-message">
+    <input id="input-name" placeholder="Insira seu nome"/>
+    <input id="input-message" placeholder="Insira sua mensagem"/>
+    <button id="send-message-button"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
+  </div>
+
+  <!-- Onde as mensagens serão inseridas -->
+  <div id="chat-container"></div>
+
+</div>
+
+<!-- Importar o firebase -->
+<script src="https://www.gstatic.com/firebasejs/3.4.0/firebase.js"></script>
+
+<!-- Importar icones -->
+<script src="https://use.fontawesome.com/6d891047d5.js"></script>
+
+<!-- JavaScript -->
+<script>
+  // Aguardar os elementos da DOM serem carregados
+  document.addEventListener('DOMContentLoaded', function () {
+    var jaCarregouMensagensAnteriores = false;
+    var usuarioAtual = "";
+
+    // Inicializar a instânca do firebase
+    firebase.initializeApp({
+      apiKey: "AIzaSyDm9VELymxmtderQWNBmMfXwY_stgRoPsg",
+      authDomain: "escola-de-ferias.firebaseapp.com",
+      databaseURL: "https://escola-de-ferias.firebaseio.com/",
+      storageBucket: "gs://escola-de-ferias.appspot.com/"
+    });
+
+    // Função para receber mensagens do firebase
+    function escutarMensagens(callback) {
+      var caminhoMensagens = "/mensagem";
+      var tabelaMensagens = firebase.database().ref(caminhoMensagens);
+
+      tabelaMensagens.on('value', function (snapshot) {
+        var mensagens;
+
+        // Tem nova mensagem no banco?
+        if (snapshot.val()) {
+          mensagens = snapshot.val();
+        }
+
+        // Retornar callback com objetos mapeados em array
+        callback(Object.keys(mensagens).map(function (key) {
+          return mensagens[key];
+        }));
+      });
+    }
+
+    // Ficar escutando novas mensagens
+    escutarMensagens(function (mensagens) {
+      usuarioAtual = document.getElementById("input-name").value;
+
+      // Verifica se as mensagens anteriores ja carregaram
+      if (jaCarregouMensagensAnteriores) {
+        var posicaoUltimaMensagem = mensagens.length - 1;
+
+        // Adiciona nova mensagem do firebase (ultima enviada)
+        addMensagem(mensagens[posicaoUltimaMensagem], usuarioAtual);
+      } else {
+        // Para cada mensagem no firebase, inserir no container de mensagens
+        mensagens.forEach(function (mensagem) {
+          addMensagem(mensagem, usuarioAtual);
         });
 
+        jaCarregouMensagensAnteriores = true;
+      }
+    });
 
-        function escutarMensagens(callback) {
-          var caminhoMensagens = "/mensagem";
-          var tabelaMensagens = firebase.database().ref(caminhoMensagens);
-          tabelaMensagens.on('value', function (snapshot) {
-            var mensagens;
-            // Tem nova mensagem no banco?
-            if (snapshot.val()) {
-              mensagens = snapshot.val();
-            }
-            callback(mensagens);
-          });
-        }
+    // Função para enviar nova mensagem ao firebase
+    function enviarMensagem(usuario, mensagem) {
+      var caminhoMensagens = "/mensagem";
+      var tabelaMensagens = firebase.database().ref(caminhoMensagens);
 
-        escutarMensagens(function(mensagens) {
-          usuario = document.getElementById("input-name").value;
-        
-          var mensagens = Object.keys(mensagens).map(function(key) {
-            return mensagens[key];
-          });
+      tabelaMensagens.push({usuario: usuario, mensagem: mensagem});
+    }
 
-          if(jaCarregou) {
-            addElement(mensagens[mensagens.length - 1], usuario);
-          } else {
-            mensagens.forEach(function(mensagem) {
-              addElement(mensagem, usuario);
-            });
+    // Resgatar botão de enviar as mensagens
+    var botaoDeEnviar = document.getElementById("send-message-button");
 
-            jaCarregou = true;
-          }
+    // Adicionar evento para enviar mensagem ao firebase
+    botaoDeEnviar.addEventListener("click", function () {
+      usuarioAtual = document.getElementById("input-name").value;
+      var mensagem = document.getElementById("input-message").value;
 
-        })
-        function enviarMensagem(usuario, mensagem, callback) {
-          var caminhoMensagens = "/mensagem";
-          var tabelaMensagens = firebase.database().ref(caminhoMensagens);
-          tabelaMensagens.push({ usuario: usuario, mensagem: mensagem }).then(callback);
-        }
+      // Enviar mensagem passando callback
+      enviarMensagem(usuarioAtual, mensagem);
+    });
 
-        document.getElementById("send-message-button").addEventListener("click", function() {
-          usuario = document.getElementById("input-name").value;
-          var mensagem = document.getElementById("input-message").value;
+    function addMensagem(mensagem, usuario) {
+      // Resgatar container onde as mensagens serão inseridas
+      var chatContainer = document.getElementById("chat-container");
 
-          enviarMensagem(usuario, mensagem, function() {
-              console.log("Mensagem enviada!");
-            });
-        });
-        function addElement(mensagem, usuario) {
-          var chatContainer = document.getElementById("chat-container");
-          var messageItem = document.createElement("div");
-          messageItem.className += "message-item row";
+      // Criar um container para nova mensagem
+      var messageItem = document.createElement("div");
+      messageItem.className += "message-item row";
 
-          var messageContent = document.createElement("div");
-          if (mensagem.usuario.trim() === usuario.trim()) {
-            messageContent.className += "message-content float-right";
-          } else {
-            messageContent.className += "message-content float-left";
-          }
+      // Criar container para o conteúdo da nova mensagem
+      var messageContent = document.createElement("div");
 
-          var messageTitle = document.createElement("h4");
-          messageTitle.className += "author";
-          messageTitle.innerHTML = mensagem.usuario;
+      // Verificar qual lado a mensagem deve ser inserida de acordo com usuário
+      if (mensagem.usuario.trim() === usuario.trim()) {
+        messageContent.className += "message-content float-right";
+      } else {
+        messageContent.className += "message-content float-left";
+      }
 
-          var messageText = document.createElement("p");
-          messageText.innerHTML = mensagem.mensagem;
+      // Criar título com o nome do usuário
+      var messageTitle = document.createElement("h4");
+      messageTitle.className += "author";
+      messageTitle.innerHTML = mensagem.usuario;
 
-          messageContent.appendChild(messageTitle);
-          messageContent.appendChild(messageText);
-          messageItem.appendChild(messageContent);
+      // Criar paragrafo com mensagem
+      var messageText = document.createElement("p");
+      messageText.innerHTML = mensagem.mensagem;
 
-          chatContainer.insertBefore(messageItem, chatContainer.firstChild);
-        }
-    }, 800 );
-  </script>
-  <script src="https://use.fontawesome.com/6d891047d5.js"></script>
+      // Montar hierarquia de filhos
+      messageContent.appendChild(messageTitle);
+      messageContent.appendChild(messageText);
+      messageItem.appendChild(messageContent);
+
+      // Inserir dentro do container de mensagens
+      chatContainer.insertBefore(messageItem, chatContainer.firstChild);
+    }
+  }, 800);
+</script>
 </body>
 </html>
