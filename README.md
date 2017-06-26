@@ -5,6 +5,17 @@ Real time chat desenvolvido como exemplo para atividade desenvolvida na 5ª Edi�
   - JavaScript
   - Firebase
 
+# Colaboradores
+  - Rafael Câmara
+    - [Linkedin](https://www.linkedin.com/in/rafaelcamaram/)
+    - [Github](https://github.com/rafaelcamaram)
+    - [Facebook](https://www.facebook.com/rafaelcamaram)
+    - [Twitter](https://twitter.com/rafaelcamaram)
+  - Igor Octaviano
+    - [Linkedin](https://www.linkedin.com/in/igoroctaviano/)
+    - [Github](github.com/igoroctaviano)
+    - [Twitter](https://twitter.com/igoroctaviano/)
+
 # Step by Step
 ## 1. Preparando arquivos
   - Antes de qualquer coisa, definir a estrutura base do nosso arquivo HTML inicial. Para isso, crie um arquivo `index.html` dentro da pasta raiz do nosso projeto e insira a seguinte estrutura. 
@@ -168,42 +179,46 @@ Real time chat desenvolvido como exemplo para atividade desenvolvida na 5ª Edi�
         }
 
   - Agora precisamos criar a div que será responsável por conter o balão de menssagem em si. Para isso, crie uma div com as classes `message-content float-right` caso você queira criar um balão a direita da tela ou troque para `message-content float-left` caso queira uma balão a esquerda.
-  - Falar sobre as atribuições agora
+  - Iremos definir em nosso `style.css` a seguinte declaração. Onde iremos determinar que nosso `#message-content` irá ter no mínimo `50px` de largura e no máximo `40%` e a sua altura será determinada a partir da quantidade de conteúdo existente na div. Iremos ter também uma borda interna (padding) de `30px` e uma borda superior e inferior de `15px`. O nosso balão terá fundo branco (background-color) e uma borda arredondada de `15px` (border-radius). Além de ter uma sombra projetada (box-shadow).
 
+        .message-content {
+        min-width: 50px;
+        max-width: 40%;
+        height: auto;
+
+        padding: 30px;
+        margin-top: 15px;
+        margin-bottom: 15px;
+
+        border-radius: 15px;
+        background-color: white;
+
+        box-shadow: 0 5px 19px -2px #d5d5d5;
+        }
+
+  - Para determinar se o balão de mensagem irá ficar na esquerda (quando você não for o remetente) ou na direita (quando você for o remetente) iremos definir as classes `float-left` e `float-right` que adicionamos a nossa div anteriormente. A declaração das mesmas será a seguinte:
+
+        .float-left {
+            float: left;
+        }
+
+        .float-right {
+            float: right;
+        }
 
 ### Todos
 
- - Write MOAR Tests
- - Add Night Mode
-
-License
-----
-
-MIT
-
-
-**Free Software, Hell Yeah!**
-
-[//]: # (These are reference links used in the body of this note and get stripped out when the markdown processor does its job. There is no need to format nicely because it shouldn't be seen. Thanks SO - http://stackoverflow.com/questions/4823468/store-comments-in-markdown-syntax)
+ - Integrar o login com Facebook disponibilizado pelo Firebase, de forma que não exista a possibilidade de postar em nome de outras pessoas.
+ - Adicionar mensagem de erro caso o botão de enviar mensagem seja clicado quando os campos estiverem vazios
+ - Adicionar a data em que a mensagem foi enviada
+ - Adicionar foto (buscar do Facebook) da usuário que enviou a mensagem
+ - Orientar a exibição das mensagens de forma que as mensagens mais novas sejam exibidas em baixo e as mais antigas em cima. Igual ocorre em aplicativos como Whatsapp.
+ - Passar campos de envio para a parte de baixo da página, de forma que eles fiquem fixados no `bottom: 0`. Desta forma, sempre serei capaz de ver os campos independente de quanto eu abaixe na página.
 
 
-   [dill]: <https://github.com/joemccann/dillinger>
-   [git-repo-url]: <https://github.com/joemccann/dillinger.git>
-   [john gruber]: <http://daringfireball.net>
-   [df1]: <http://daringfireball.net/projects/markdown/>
-   [markdown-it]: <https://github.com/markdown-it/markdown-it>
-   [Ace Editor]: <http://ace.ajax.org>
-   [node.js]: <http://nodejs.org>
-   [Twitter Bootstrap]: <http://twitter.github.com/bootstrap/>
-   [jQuery]: <http://jquery.com>
-   [@tjholowaychuk]: <http://twitter.com/tjholowaychuk>
-   [express]: <http://expressjs.com>
-   [AngularJS]: <http://angularjs.org>
-   [Gulp]: <http://gulpjs.com>
 
-   [PlDb]: <https://github.com/joemccann/dillinger/tree/master/plugins/dropbox/README.md>
-   [PlGh]: <https://github.com/joemccann/dillinger/tree/master/plugins/github/README.md>
-   [PlGd]: <https://github.com/joemccann/dillinger/tree/master/plugins/googledrive/README.md>
-   [PlOd]: <https://github.com/joemccann/dillinger/tree/master/plugins/onedrive/README.md>
-   [PlMe]: <https://github.com/joemccann/dillinger/tree/master/plugins/medium/README.md>
-   [PlGa]: <https://github.com/RahulHP/dillinger/blob/master/plugins/googleanalytics/README.md>
+**Projeto livre para contribuição**
+
+Vamos melhorar esse projeto juntos, somos gratos por qualquer contribuição que você fizer!
+
+Feito com ❤️️ e coca-cola
