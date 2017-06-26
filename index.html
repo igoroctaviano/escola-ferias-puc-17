@@ -3,10 +3,8 @@
 <head>
   <!-- Título da tab do navegador -->
   <title>Chat Exercise</title>
-
   <!-- Para reconhecer pontuações do português -->
   <meta charset="UTF-8">
-
   <!-- Estilo CSS -->
   <link rel="stylesheet" type="text/css" href="style.css">
   <!-- Fonte -->
@@ -16,17 +14,15 @@
 
 <!-- Container para alinhar conteudo no meio da tela -->
 <div class="container">
-
   <!-- Cabeçalho -->
   <div id="header">
     <h1>Chat Escola de Férias</h1>
-    <h3>Simplão né!</h3>
   </div>
 
   <!-- Formulário de envio das mensagens -->
   <div id="form-send-message">
-    <input id="input-name" placeholder="Insira seu nome" required/>
-    <input id="input-message" placeholder="Insira sua mensagem" required/>
+    <input id="input-name" placeholder="Insira seu nome"/>
+    <input id="input-message" placeholder="Insira sua mensagem"/>
     <button id="send-message-button"><i class="fa fa-paper-plane" aria-hidden="true"></i></button>
   </div>
 
@@ -125,7 +121,7 @@
 
       // Criar um container para nova mensagem
       var messageItem = document.createElement("div");
-      messageItem.className += "message-item row";
+      messageItem.className += "row";
 
       // Criar container para o conteúdo da nova mensagem
       var messageContent = document.createElement("div");

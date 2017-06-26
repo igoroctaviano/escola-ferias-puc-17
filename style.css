@@ -17,9 +17,7 @@ p, h4 {
 }
 
 #header {
-  display: flex;
-  justify-content: flex-start;
-  align-items: baseline;
+  text-align: center;
 }
 
 #chat-container {
@@ -78,7 +76,6 @@ input {
 #input-name {
   width: auto;
   max-width: 40%;
-  margin-left: 15px;
 }
 
 #input-message {
